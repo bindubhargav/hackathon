@@ -3,23 +3,49 @@ package com.test.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.test.dto.Patient;
+import com.test.dto.DoctorDTO;
+import com.test.dto.PatientDTO;
 
 @Service
 public class RegistrationServiceImpl implements RegistrationService {
 
 	@Autowired
-    private PatientRepository patientRepository;
+    private Repository repository;
+	
+	@Autowired
+	private DoctorRepositorySQL doctorRepository;
 	
 	@Override
-	public Patient registerPatient(String name, int age, String phoneNumber,
-			String emailId) throws Exception {
+	public boolean addDoctor(DoctorDTO doctorDTO) {
 		try{
-			Patient patient = patientRepository.addPatient(name, age, phoneNumber, emailId);
-			return patient;
+			repository.addDoctor(doctorDTO);
+			return true;
 		}	
 		catch(Exception ex){
-			System.out.println("Exception occured while registering user: "+ name + "; Exception: " + ex);
+			System.out.println("Exception occured while registering doctor: "+ doctorDTO.getName() + "; Exception: " + ex);
+			return false;
+		}
+	}
+
+	@Override
+	public Iterable<DoctorDTO> listDoctors() {
+		try {
+			Iterable<DoctorDTO> doctorDTO = doctorRepository.findAll();
+			return doctorDTO; 
+		} catch (Exception e) {
+			return null;
+		}
+	}
+	
+	@Override
+	public PatientDTO registerPatient(PatientDTO patient) throws Exception {
+		try{
+			repository.addPatient(patient);
+			PatientDTO registeredPatient = repository.getPatient(patient);
+			return registeredPatient;
+		}	
+		catch(Exception ex){
+			System.out.println("Exception occured while registering patient: "+ patient.getName() + "; Exception: " + ex);
 			throw ex;
 		}
 	}

@@ -4,9 +4,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.test.dto.PatientDetailsRequestDTO;
 import com.test.dto.PatientDetailsResponseDTO;
-import com.test.dto.Patient;
+import com.test.dto.PatientDTO;
 import com.test.service.PatientRepositorySQL;
 import com.test.service.RegistrationService;
 
@@ -24,13 +23,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.test.dto.DoctorDTO;
-import com.test.service.DoctorRegistrationService;
 
 @RestController
 public class RegistrationController {
 	
     @Autowired
-    private DoctorRegistrationService doctorRegistrationService;
     private RegistrationService registrationService;
 
 	@RequestMapping(value = "/api/doctor/register", method = RequestMethod.POST)
@@ -38,7 +35,7 @@ public class RegistrationController {
 			HttpServletResponse response,
 			@RequestBody DoctorDTO doctorDTO) throws JsonProcessingException 
 	{
-		if(doctorRegistrationService.addDoctor(doctorDTO)) {
+		if(registrationService.addDoctor(doctorDTO)) {
 			return new ResponseEntity<String>("Success", HttpStatus.OK);
 		}
 		return new ResponseEntity<String>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -47,11 +44,10 @@ public class RegistrationController {
     @RequestMapping(value = "/api/patient/register", method = RequestMethod.POST, produces = "application/json")
     public ResponseEntity<PatientDetailsResponseDTO> registerPatient(HttpServletRequest request,
 			HttpServletResponse response,
-			@RequestBody PatientDetailsRequestDTO requestDTO) throws JsonProcessingException 
+			@RequestBody PatientDTO patientDTO) throws JsonProcessingException 
 	{
 		try {
-			Patient patient = registrationService.registerPatient(requestDTO.getName(), requestDTO.getAge(), 
-					requestDTO.getPhoneNumber(), requestDTO.getEmail());	
+			PatientDTO patient = registrationService.registerPatient(patientDTO);	
 			PatientDetailsResponseDTO responseDTO = new PatientDetailsResponseDTO();
 			responseDTO.setPatientId(patient.getId());
 			responseDTO.setName(patient.getName());			

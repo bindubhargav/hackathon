@@ -3,7 +3,7 @@ package com.test.dto;
 import javax.persistence.*;
 @Entity
 @Table(name = "patientRepository")
-public class Patient {
+public class PatientDTO {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
@@ -12,9 +12,9 @@ public class Patient {
     private String phoneNumber;
     private String emailId;
     
-    public Patient() {
+    public PatientDTO() {
     }
-    public Patient(String name, int age, String phoneNumber, String emailId) {
+    public PatientDTO(String name, int age, String phoneNumber, String emailId) {
         this.name = name;
         this.age = age;
         this.phoneNumber = phoneNumber;
